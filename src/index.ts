@@ -1,8 +1,8 @@
 import TelegramBot from "node-telegram-bot-api";
 import { DBusBattery } from "./utils/getPercentage.ts";
-import { configDotenv } from "dotenv";
+import dotenv from "dotenv";
 
-configDotenv();
+dotenv.config();
 
 async function main(): Promise<void> {
   if (!process.env.BOT_TOKEN) {
@@ -13,7 +13,7 @@ async function main(): Promise<void> {
     throw new Error("CHAT_ID is missing");
   }
 
-  const bot = new TelegramBot(process.env.BOT_TOKEN);
+  const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
   const CHAT_ID = process.env.CHAT_ID;
 
   const percentageObj = await DBusBattery.getPercentage();
@@ -26,7 +26,7 @@ async function main(): Promise<void> {
 
   props.on("PropertiesChanged", (_iface, changed) => {
     if (changed.Percentage) {
-      bot.sendMessage(CHAT_ID, changed.Percentage);
+      bot.sendMessage(CHAT_ID, changed.Percentage.value.toString());
     }
   });
 }
