@@ -8,13 +8,15 @@
     "dev": "bun run src/index.ts --watch"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/node-telegram-bot-api": "^0.64.12"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
     "dbus-next": "^0.10.2",
+    "dotenv": "^17.2.3",
     "node-telegram-bot-api": "^0.66.0"
   }
 }

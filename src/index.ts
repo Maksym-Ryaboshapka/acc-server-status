@@ -1,20 +1,34 @@
-import dbus from "dbus-next";
+import TelegramBot from "node-telegram-bot-api";
+import { DBusBattery } from "./utils/getPercentage.ts";
+import { configDotenv } from "dotenv";
 
-async function getPercentage(): Promise<number | Error> {
-  const bus = dbus.systemBus();
+configDotenv();
 
-  const obj = await bus.getProxyObject("org.freedesktop.UPower", "/org/freedesktop/UPower/devices/battery_BAT0");
-
-  const upower = obj.getInterface("org.freedesktop.UPower.Device");
-  const props = obj.getInterface("org.freedesktop.DBus.Properties");
-
-  if (!props || !props.Get) {
-    throw new Error("The D-Bus interface Properties does not contain a Get method");
+async function main(): Promise<void> {
+  if (!process.env.BOT_TOKEN) {
+    throw new Error("BOT_TOKEN is missing");
   }
 
-  const percentage = await props.Get("org.freedesktop.UPower.Device", "Percentage");
+  if (!process.env.CHAT_ID) {
+    throw new Error("CHAT_ID is missing");
+  }
 
-  return percentage.value;
+  const bot = new TelegramBot(process.env.BOT_TOKEN);
+  const CHAT_ID = process.env.CHAT_ID;
+
+  const percentageObj = await DBusBattery.getPercentage();
+
+  if (!percentageObj) {
+    throw new Error("Unable to get battery level");
+  }
+
+  const { props } = percentageObj;
+
+  props.on("PropertiesChanged", (_iface, changed) => {
+    if (changed.Percentage) {
+      bot.sendMessage(CHAT_ID, changed.Percentage);
+    }
+  });
 }
 
-getPercentage().then(percentage => console.log(percentage));
+main();
