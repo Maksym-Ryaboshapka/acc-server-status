@@ -16,6 +16,8 @@ async function main(): Promise<void> {
   const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
   const CHAT_ID = process.env.CHAT_ID;
 
+  await bot.sendMessage(CHAT_ID, "Bot is running");
+
   const percentageObj = await DBusBattery.getPercentage();
 
   if (!percentageObj) {
