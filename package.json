@@ -1,0 +1,20 @@
+{
+  "name": "acc-server-status",
+  "module": "src/index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "dev": "bun run src/index.ts --watch"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "dbus-next": "^0.10.2",
+    "node-telegram-bot-api": "^0.66.0"
+  }
+}
