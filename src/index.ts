@@ -24,11 +24,13 @@ async function main(): Promise<void> {
     throw new Error("Unable to get battery level");
   }
 
+  const THRESHOLD = 15;
+
   const { props } = percentageObj;
 
   props.on("PropertiesChanged", (_iface, changed) => {
-    if (changed.Percentage) {
-      bot.sendMessage(CHAT_ID, changed.Percentage.value.toString());
+    if (changed.Percentage && changed.Percentage.value === THRESHOLD) {
+      bot.sendMessage(CHAT_ID, "Заряд аккумулятора сервера опустился до 15%!");
     }
   });
 }
