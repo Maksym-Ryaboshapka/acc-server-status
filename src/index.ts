@@ -1,7 +1,6 @@
 import dbus from "dbus-next";
 
 async function getPercentage(): Promise<number | Error> {
-
   const bus = dbus.systemBus();
 
   const obj = await bus.getProxyObject("org.freedesktop.UPower", "/org/freedesktop/UPower/devices/battery_BAT0");
@@ -15,7 +14,7 @@ async function getPercentage(): Promise<number | Error> {
 
   const percentage = await props.Get("org.freedesktop.UPower.Device", "Percentage");
 
-  return percentage;
+  return percentage.value;
 }
 
 getPercentage().then(percentage => console.log(percentage));
