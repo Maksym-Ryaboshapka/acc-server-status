@@ -25,13 +25,30 @@ async function main(): Promise<void> {
   }
 
   const THRESHOLD = 15;
+  const FULL = 100;
 
   const { props } = percentageObj;
 
   props.on("PropertiesChanged", (_iface, changed) => {
-    if (changed.Percentage && changed.Percentage.value === THRESHOLD) {
-      bot.sendMessage(CHAT_ID, "Заряд аккумулятора сервера опустился до 15%!");
+    if (changed.Percentage) {
+      if (changed.Percentage.value === THRESHOLD) {
+        bot.sendMessage(CHAT_ID, "Заряд аккумулятора сервера опустился до 15%");
+      } else if (changed.Percentage.value === FULL) {
+        bot.sendMessage(CHAT_ID, "Заряд аккумулятора сервера достиг 100%");
+      }
     }
+  });
+
+  bot.onText(/\/acc_level/, async (): Promise<void> => {
+    const percentageObj = await DBusBattery.getPercentage();
+
+    if (!percentageObj) {
+      throw new Error("Unable to get battery level");
+    }
+
+    const { percentage } = percentageObj;
+
+    await bot.sendMessage(CHAT_ID, `Текущий заряд аккумулятора сервера ${percentage}%`);
   });
 }
 
